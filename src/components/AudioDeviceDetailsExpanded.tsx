@@ -28,23 +28,17 @@ interface AudioDeviceDetailsExpandedProps {
 
 const AudioDeviceDetailsExpanded: React.FC<AudioDeviceDetailsExpandedProps> = ({device, onListRefreshRequested, onReExpandRequested}) => {
 
+    const deviceMessageTypeLabels: Record<DeviceMessageType, string> = {
+        [DeviceMessageType.Confirmed]: 'Availability confirmed',
+        [DeviceMessageType.Detached]: 'Device detached',
+        [DeviceMessageType.Discovered]: 'Device discovered',
+        [DeviceMessageType.VolumeRenderChanged]: 'Output volume updated',
+        [DeviceMessageType.VolumeCaptureChanged]: 'Input volume updated',
+    };
+
     const deviceMessageTypeToString
-        = (deviceMessageType: DeviceMessageType): string => {
-        switch (deviceMessageType) {
-            case DeviceMessageType.Confirmed:
-                return 'Availability confirmed';
-            case DeviceMessageType.Detached:
-                return 'Device detached';
-            case DeviceMessageType.Discovered:
-                return 'Device discovered';
-            case DeviceMessageType.VolumeRenderChanged:
-                return 'Output volume updated';
-            case DeviceMessageType.VolumeCaptureChanged:
-                return 'Input volume updated';
-            default:
-                return 'Unknown';
-        }
-    }
+        = (deviceMessageType: DeviceMessageType): string =>
+        deviceMessageTypeLabels[deviceMessageType] ?? 'Unknown';
 
     const deviceTypeToString
         = (flowType: DeviceFlowType): string => {

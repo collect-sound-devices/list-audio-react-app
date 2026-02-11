@@ -77,7 +77,7 @@ export const ThemeProviderComponent: React.FC<ThemeProviderComponentProps> = ({ 
             const newMode = !prevMode;
             try {
                 localStorage.setItem('theme', newMode ? 'dark' : 'light');
-                document.cookie = `theme-mode=${newMode ? 'dark' : 'light'}; path=/; max-age=31536000; samesite=lax`;
+                document.cookie = `theme-mode=${newMode ? 'dark' : 'light'}; Path=/; Max-Age=31536000; SameSite=Lax; Secure`;
             } catch {
                 // ignore
             }

@@ -11,11 +11,12 @@ version: "1.0"
 
 #Specify inspection profile for code analysis
 profile:
-  name: qodana.starter
+#  name: qodana.starter
+  path: .qodana/profiles/inspection-profile01.xml
 
 #Enable inspections
-#include:
-#  - name: <SomeEnabledInspectionId>
+include:
+  - name: CyclomaticComplexityJS
 
 #Disable inspections
 exclude:
@@ -24,6 +25,8 @@ exclude:
       - ./.next
       - next.config.js
       - next-env.d.ts
+      - tsconfig.tsbuildinfo
+  - name: Eslint
 
 #Execute shell command before Qodana execution (Applied in CI/CD pipeline)
 #bootstrap: sh ./prepare-qodana.sh
@@ -35,7 +38,7 @@ exclude:
 # Quality gate. Will fail the CI/CD pipeline if any condition is not met
 # severityThresholds - configures maximum thresholds for different problem severities
 # testCoverageThresholds - configures minimum code coverage on a whole project and newly added code
-# Code Coverage is available in Ultimate and Ultimate Plus plans
+#  coverage is available in Ultimate and Ultimate Plus plans
 #failureConditions:
 #  severityThresholds:
 #    any: 15

@@ -1,7 +1,7 @@
 # Audio Device Repository Client (React / TypeScript / Next.js)
 
 Visualizes an audio devices repository using Next.js / React, deployed on Vercel,
-[https://list-audio-react-app.vercel.app](https://list-audio-react-app.vercel.app). The backend is a ASP.Net Core Server with RESTful API.
+[https://list-audio-react-app.vercel.app](https://list-audio-react-app.vercel.app). The backend is an ASP.Net Core Server with RESTful API.
 
 ## Web Hosting
 
