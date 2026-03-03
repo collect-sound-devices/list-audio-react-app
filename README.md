@@ -1,23 +1,24 @@
-# Audio Device Repository Client (React / TypeScript / Next.js)
+# Audio Device Repository Client
 
-Visualizes an audio devices repository using Next.js / React, deployed on Vercel,
-[https://list-audio-react-app.vercel.app](https://list-audio-react-app.vercel.app). The backend is an ASP.Net Core Server with RESTful API.
+Visualizes an audio devices repository using Next.js / React / TypeScript.<br>
+Launch it here [here](https://list-audio-react-app.vercel.app).<br>
+The *Audio Device Repository Client* is primary client of the *Device Repository Server*,
+see [audio-device-repo-server](https://github.com/collect-sound-devices/audio-device-repo-server/).<br>
+
+![primaryWebClient screenshot](202509011555ReactRepoApp.jpg)
 
 ## Web Hosting
 
-### Frontend
-- The Next.js / React frontend is deployed on Vercel at https://list-audio-react-app.vercel.app, connecting to the ASP.NET Core backend.
+### Client
+- The *Audio Device Repository Client* is deployed on Vercel at https://list-audio-react-app.vercel.app.
 
-### Backend
-- The backend ASP.NET Core Server is hosted on GitHub Codespaces.
-  It starts automatically on-demand.
-
-*Notes*:
-- *The backend server's second instance is hosted on Azure and has to be manually started*
+### Server
+- The *Device Repository Server* is hosted on GitHub Codespaces.<br>
+  It starts automatically (on-demand).
 
 ## Development Environment
 
-### 1. Start the backend locally
+### (Optional) Compile and start the server locally
 
 - Check out the backend repo [audio-device-repo-server](https://github.com/eduarddanziger/audio-device-repo-server/) and install .NET tools
 - Start the ASP.NET Core Web API Server:
@@ -27,48 +28,48 @@ cd DeviceRepoAspNetCore
 dotnet run --launch-profile http
 ```
 
-### 2. Start the frontend locally (Next.js)
+### Start the client locally (development mode)
 
-Configure environment variables so the frontend points to your local backend.
-You can edit `.env.development` file or set the environment variables directly: 
-
-- PowerShell
-
-```powershell
-$env:NEXT_PUBLIC_API_GITHUB_URL = "http://localhost:5027/api"
+1. Install dependencies:
+```bash
+npm install
 ```
 
-- cmd.exe
+*Note*<br>
+*- If you use locally hosted *Device Repository Server*, configure environment variables so the client points to your local backend.
+You can edit `.env.development` file or set the environment variables directly via powershell `$env:NEXT_PUBLIC_API_GITHUB_URL = "http://localhost:5027/api"`
+or via cmd.exe `setx NEXT_PUBLIC_API_GITHUB_URL "http://localhost:5027/api"`.*
 
-```bat
-set NEXT_PUBLIC_API_GITHUB_URL=http://localhost:5027/api
-```
-
-Then run the dev server:
-
+2. Start the npm development server:
 ```bash
 npm run dev
 ```
 
-Open a browser at http://localhost:3000.
+3. Open a browser at http://localhost:3000.
 
-*Notes*:
-- *The app also supports Azure as a target by setting `NEXT_PUBLIC_API_HOSTED_ON=AZURE` and providing `NEXT_PUBLIC_API_AZURE_URL`, see `.env.development` file*.
-- *The values can be plain URLs or encrypted strings (the app will attempt to decrypt and fall back to plaintext if decryption fails)*.
+*Notes*<br>
+*- The app also supports Azure as a target by setting `NEXT_PUBLIC_API_HOSTED_ON=AZURE` and providing `NEXT_PUBLIC_API_AZURE_URL`, see `.env.development` file*<br>
+*- The values can be plain URLs or secure pre-defined encrypted strings (the app will attempt to decrypt and fall back to plaintext if decryption fails)*.
 
-## Deployment
+## Local deployment (production mode)
 
-- Build for production:
+*Note*<br>
+*- If you use locally hosted *Device Repository Server*, configure environment variables so the client points to your local backend.
+You can edit `.env.production` file or set the environment variable(s) directly NEXT_PUBLIC_API_GITHUB_URL, see 
+
+1. Build the client for production:
 
 ```bash
 npm run build
 ```
 
-- Start the production server:
+2. Start the npm production server:
 
 ```bash
 npm start
 ```
+
+3. Open a browser at http://localhost:3000.
 
 ## Changelog
 - 2026.01 Device removal added 
