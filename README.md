@@ -12,9 +12,6 @@ Visualizes an audio devices repository using Next.js / React, deployed on Vercel
 - The backend ASP.NET Core Server is hosted on GitHub Codespaces.
   It starts automatically on-demand.
 
-*Notes*:
-- *The backend server's second instance is hosted on Azure and has to be manually started*
-
 ## Development Environment
 
 ### 1. Start the backend locally
