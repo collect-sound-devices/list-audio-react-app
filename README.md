@@ -62,6 +62,11 @@ You can edit `.env.production` file or set the environment variable(s) directly 
 ```bash
 npm run build
 ```
+## Governance (Qodana)
+Local Qodana analysis is configured in `qodana.yaml` to use the `jetbrains/qodana-js:2025.3` linter together with
+the custom inspection profile at `.qodana/profiles/inspection-profile01.xml`.
+It explicitly checks `CyclomaticComplexityJS` and excludes non-source files such as `README.md`.
+
 
 2. Start the npm production server:
 
