@@ -35,12 +35,13 @@ jobs:
           sync_env() {
             local name="$1"
             local value="$2"
+            local extra_args="${3:-}"
 
             vercel env rm "$name" production --yes --token="$VERCEL_TOKEN" >/dev/null 2>&1 || true
-            printf "%s" "$value" | vercel env add "$name" production --token="$VERCEL_TOKEN"
+            printf "%s\n" "$value" | vercel env add "$name" production $extra_args --token="$VERCEL_TOKEN"
           }
 
-          sync_env GITHUB_PAT "$GITHUB_PAT"
+          sync_env GITHUB_PAT "$GITHUB_PAT" "--sensitive"
           sync_env NEXT_PUBLIC_API_GITHUB_URL "$AUDIO_API_GITHUB_URL"
           sync_env NEXT_PUBLIC_API_AZURE_URL "$AUDIO_API_AZURE_URL"
           sync_env NEXT_PUBLIC_API_HOSTED_ON "GITHUB"
