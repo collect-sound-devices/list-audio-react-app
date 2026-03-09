@@ -31,7 +31,7 @@ dotnet run --launch-profile http
 
 ### Start the client locally (development mode)
 
-1. Install dependencies:
+**Step 1. Install dependencies:**
 ```bash
 npm install
 ```
@@ -39,16 +39,15 @@ npm install
 *Note*<br>
 *- If you use locally hosted *Device Repository Server*, configure environment variables so the client points to your local backend.
 You can edit `.env.development` file or set the environment variables directly via powershell `$env:NEXT_PUBLIC_API_GITHUB_URL = "http://localhost:5027/api"`
-or via cmd.exe `setx NEXT_PUBLIC_API_GITHUB_URL "http://localhost:5027/api"`.*
-
+or via cmd.exe `setx NEXT_PUBLIC_API_GITHUB_URL "http://localhost:5027/api"`.<br>*
 *- If you want the app to start the GitHub Codespace on demand, set `GITHUB_PAT` as a server-side environment variable.*
 
-2. Start the npm development server:
+**Step 2. Start the npm development server:**
 ```bash
 npm run dev
 ```
 
-3. Open a browser at http://localhost:3000.
+**Step 3. Open a browser at http://localhost:3000**
 
 *Notes*<br>
 *- The app also supports Azure as a target by setting `NEXT_PUBLIC_API_HOSTED_ON=AZURE` and providing `NEXT_PUBLIC_API_AZURE_URL`, see `.env.development` file*<br>
@@ -58,28 +57,25 @@ npm run dev
 
 *Note*<br>
 *- If you use locally hosted *Device Repository Server*, configure environment variables so the client points to your local backend.
-You can edit `.env.production` file or set `NEXT_PUBLIC_API_GITHUB_URL` directly.*
-
+You can edit `.env.production` file or set `NEXT_PUBLIC_API_GITHUB_URL` directly.<br>*
 *- If you want the app to start the GitHub Codespace on demand, set `GITHUB_PAT` as a server-side environment variable.*
 
-1. Build the client for production:
+**Step 1. Build the client for production:**
+   ```bash
+   npm run build
+   ```
 
-```bash
-npm run build
-```
+**Step 2. Start the npm production server:**
+    ```bash
+    npm start
+    ```
+
+**Step 3. Open a browser at http://localhost:3000**
+
 ## Governance (Qodana)
 Local Qodana analysis is configured in `qodana.yaml` to use the `jetbrains/qodana-js:2025.3` linter together with
 the custom inspection profile at `.qodana/profiles/inspection-profile01.xml`.
 It explicitly checks `CyclomaticComplexityJS` and excludes non-source files such as `README.md`.
-
-
-2. Start the npm production server:
-
-```bash
-npm start
-```
-
-3. Open a browser at http://localhost:3000.
 
 ## Vercel deployment
 
