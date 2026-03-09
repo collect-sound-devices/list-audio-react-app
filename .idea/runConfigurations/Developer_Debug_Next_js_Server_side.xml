@@ -6,7 +6,9 @@
       <script value="dev" />
     </scripts>
     <node-interpreter value="project" />
-    <envs />
+    <envs>
+      <env name="GITHUB_PAT" value="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" />
+    </envs>
     <EXTENSION ID="com.intellij.javascript.debugger.execution.StartBrowserRunConfigurationExtension">
       <browser with-js-debugger="true" />
     </EXTENSION>
