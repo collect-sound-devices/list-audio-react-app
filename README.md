@@ -11,6 +11,7 @@ see [audio-device-repo-server](https://github.com/collect-sound-devices/audio-de
 
 ### Client
 - The *Audio Device Repository Client* is deployed on Vercel at https://list-audio-react-app.vercel.app.
+- GitHub Actions uses `.github/workflows/vercel-init.yml` for one-time Vercel project setup and `.github/workflows/deploy.yml` for regular production deployments.
 
 ### Server
 - The *Device Repository Server* is hosted on GitHub Codespaces.<br>
@@ -40,6 +41,8 @@ npm install
 You can edit `.env.development` file or set the environment variables directly via powershell `$env:NEXT_PUBLIC_API_GITHUB_URL = "http://localhost:5027/api"`
 or via cmd.exe `setx NEXT_PUBLIC_API_GITHUB_URL "http://localhost:5027/api"`.*
 
+*- If you want the app to start the GitHub Codespace on demand, set `GITHUB_PAT` as a server-side environment variable.*
+
 2. Start the npm development server:
 ```bash
 npm run dev
@@ -49,13 +52,15 @@ npm run dev
 
 *Notes*<br>
 *- The app also supports Azure as a target by setting `NEXT_PUBLIC_API_HOSTED_ON=AZURE` and providing `NEXT_PUBLIC_API_AZURE_URL`, see `.env.development` file*<br>
-*- The values can be plain URLs or secure pre-defined encrypted strings (the app will attempt to decrypt and fall back to plaintext if decryption fails)*.
+*- The API URL values can be plain URLs or pre-defined encrypted strings (the app will attempt to decrypt and fall back to plaintext if decryption fails)*.
 
 ## Local deployment (production mode)
 
 *Note*<br>
 *- If you use locally hosted *Device Repository Server*, configure environment variables so the client points to your local backend.
-You can edit `.env.production` file or set the environment variable(s) directly NEXT_PUBLIC_API_GITHUB_URL, see 
+You can edit `.env.production` file or set `NEXT_PUBLIC_API_GITHUB_URL` directly.*
+
+*- If you want the app to start the GitHub Codespace on demand, set `GITHUB_PAT` as a server-side environment variable.*
 
 1. Build the client for production:
 
@@ -75,6 +80,12 @@ npm start
 ```
 
 3. Open a browser at http://localhost:3000.
+
+## Vercel deployment
+
+- Run `.github/workflows/vercel-init.yml` once for a new Vercel project or when rotating secrets.
+- Regular automatic deployments to Vercel use `.github/workflows/deploy.yml`.
+- The scripts above use the following GitHub Actions secrets: `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`, `GITHUB_PAT`, `AUDIO_API_GITHUB_URL`, `AUDIO_API_AZURE_URL`.
 
 ## Changelog
 - 2026.01 Device removal added 
