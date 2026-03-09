@@ -26,6 +26,8 @@ exclude:
       - next.config.js
       - next-env.d.ts
       - tsconfig.tsbuildinfo
+      - qodana.yaml
+      - README.md
   - name: Eslint
 
 #Execute shell command before Qodana execution (Applied in CI/CD pipeline)
