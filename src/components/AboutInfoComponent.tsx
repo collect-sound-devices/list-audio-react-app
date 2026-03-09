@@ -47,7 +47,7 @@ const AboutInfoComponent = () => {
                 <Box sx={{ display: 'flex', alignItems: 'flex-start', marginBottom: 2 }}>
                     <DevicesIcon fontSize={"small"} sx={{ marginRight: 1 }} />
                     <Typography variant="body1" sx={{lineHeight: '1.2rem' }}>
-                        Frontend: {clientVersion}, {clientCodeDate}. Using next.js {nextJsVersion})
+                        Frontend: {clientVersion}, {clientCodeDate}. Using next.js {nextJsVersion}.
                     </Typography>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'flex-start', marginBottom: 2 }}>

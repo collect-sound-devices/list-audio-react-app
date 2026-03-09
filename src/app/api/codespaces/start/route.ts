@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import {NextResponse} from 'next/server';
 
 const GITHUB_API_URL = 'https://api.github.com';
 const CODESPACE_DISPLAY_NAME = 'CodeSpaceMain';
@@ -8,53 +8,56 @@ interface Codespace {
     name: string;
 }
 
-async function githubFetch(path: string, init?: RequestInit): Promise<Response> {
+function getGithubHeaders(): HeadersInit {
     const pat = process.env.GITHUB_PAT;
     if (!pat) {
         throw new Error('Missing GITHUB_PAT');
     }
 
-    return fetch(`${GITHUB_API_URL}${path}`, {
-        ...init,
-        headers: {
-            Accept: 'application/vnd.github+json',
-            Authorization: `token ${pat}`,
-            ...(init?.headers ?? {}),
-        },
+    return {
+        Accept: 'application/vnd.github+json',
+        Authorization: `token ${pat}`,
+    };
+}
+
+async function listCodespaces(): Promise<Codespace[]> {
+    const response = await fetch(`${GITHUB_API_URL}${'/user/codespaces'}`, {
+        method: 'GET',
+        headers: getGithubHeaders(),
         cache: 'no-store',
     });
+    if (!response.ok) {
+        throw new Error(`Failed to load Codespaces: ${response.status} ${response.statusText}`);
+    }
+
+    const payload = await response.json() as { codespaces?: Codespace[] };
+    return payload.codespaces ?? [];
+}
+
+async function startCodespace(name: string): Promise<void> {
+    const response = await fetch(`${GITHUB_API_URL}${`/user/codespaces/${name}/start`}`, {
+        method: 'POST',
+        headers: getGithubHeaders(),
+        cache: 'no-store',
+    });
+    if (!response.ok) {
+        throw new Error(`Failed to start Codespace: ${response.status} ${response.statusText}`);
+    }
 }
 
 export async function POST() {
     try {
-        const infoResponse = await githubFetch('/user/codespaces');
-        if (!infoResponse.ok) {
-            return NextResponse.json(
-                { error: `Failed to load Codespaces: ${infoResponse.status} ${infoResponse.statusText}` },
-                { status: 502 },
-            );
-        }
-
-        const info = await infoResponse.json() as { codespaces?: Codespace[] };
-        const codespace = info.codespaces?.find((entry) => entry.display_name === CODESPACE_DISPLAY_NAME);
+        const codespaces = await listCodespaces();
+        const codespace = codespaces.find((entry) => entry.display_name === CODESPACE_DISPLAY_NAME);
         if (!codespace) {
             return NextResponse.json({ error: `Codespace '${CODESPACE_DISPLAY_NAME}' not found.` }, { status: 404 });
         }
 
-        const startResponse = await githubFetch(`/user/codespaces/${codespace.name}/start`, {
-            method: 'POST',
-        });
-
-        if (!startResponse.ok) {
-            return NextResponse.json(
-                { error: `Failed to start Codespace: ${startResponse.status} ${startResponse.statusText}` },
-                { status: 502 },
-            );
-        }
-
+        await startCodespace(codespace.name);
         return NextResponse.json({ ok: true });
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Unknown error';
-        return NextResponse.json({ error: message }, { status: 500 });
+        const status = message.startsWith('Failed to ') ? 502 : 500;
+        return NextResponse.json({ error: message }, { status });
     }
 }
