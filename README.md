@@ -1,6 +1,6 @@
 # Audio Device Repository Client
 
-Visualizes an audio devices repository using Next.js / React / TypeScript.<br>
+Visualizes an audio device repository using Next.js / React / TypeScript.<br>
 Launch it here [here](https://list-audio-react-app.vercel.app).<br>
 The *Audio Device Repository Client* is primary client of the *Device Repository Server*,
 see [audio-device-repo-server](https://github.com/collect-sound-devices/audio-device-repo-server/).<br>
