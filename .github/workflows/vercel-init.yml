@@ -1,0 +1,46 @@
+name: Initialize Vercel Project
+
+on:
+  workflow_dispatch:
+
+jobs:
+  init-vercel:
+    runs-on: ubuntu-latest
+
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
+      AUDIO_API_GITHUB_URL: ${{ secrets.AUDIO_API_GITHUB_URL }}
+      AUDIO_API_AZURE_URL: ${{ secrets.AUDIO_API_AZURE_URL }}
+
+    steps:
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'node'
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Pull Vercel project settings
+        run: vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+
+      - name: Initialize production environment variables
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          sync_env() {
+            local name="$1"
+            local value="$2"
+
+            vercel env rm "$name" production --yes --token="$VERCEL_TOKEN" >/dev/null 2>&1 || true
+            printf "%s" "$value" | vercel env add "$name" production --token="$VERCEL_TOKEN"
+          }
+
+          sync_env GITHUB_PAT "$GITHUB_PAT"
+          sync_env NEXT_PUBLIC_API_GITHUB_URL "$AUDIO_API_GITHUB_URL"
+          sync_env NEXT_PUBLIC_API_AZURE_URL "$AUDIO_API_AZURE_URL"
+          sync_env NEXT_PUBLIC_API_HOSTED_ON "GITHUB"
