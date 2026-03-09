@@ -11,7 +11,7 @@ jobs:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-      GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
+      GITHUB_PAT: ${{ secrets.UNIVERSAL_PAT }}
       AUDIO_API_GITHUB_URL: ${{ secrets.AUDIO_API_GITHUB_URL }}
       AUDIO_API_AZURE_URL: ${{ secrets.AUDIO_API_AZURE_URL }}
 
