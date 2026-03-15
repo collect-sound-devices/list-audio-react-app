@@ -7,7 +7,25 @@ see [audio-device-repo-server](https://github.com/collect-sound-devices/audio-de
 
 ![primaryWebClient screenshot](202509011555ReactRepoApp.jpg)
 
-## Web Hosting
+## Motivation
+
+The *Audio Device Repository* Client provides a simple, responsive web UI for the
+*Device Repository Server*.
+
+## Functions
+
+- Browsing: shows the current list of collected audio devices and
+  expands a row to display device type, PnP ID, input/output volume etc.
+- Filtering and sorting: searches by query string and sorts by device name,
+  host name, operating system, or last update.
+- Maintenance: refreshes a single device from the backend and
+  deletes a device after confirmation.
+- Runtime information: shows frontend version and backend version/runtime on
+  the `About` page.
+- Backend on demand: starts the GitHub Codespaces-hosted backend
+and retries while it becomes available.
+
+## Web Hosting (Primary Use Case)
 
 ### Client
 - The *Audio Device Repository Client* is deployed on Vercel at https://list-audio-react-app.vercel.app.
@@ -50,8 +68,7 @@ npm run dev
 **Step 3. Open a browser at http://localhost:3000**
 
 *Notes*<br>
-*- The app also supports Azure as a target by setting `NEXT_PUBLIC_API_HOSTED_ON=AZURE` and providing `NEXT_PUBLIC_API_AZURE_URL`, see `.env.development` file*<br>
-*- The API URL values can be plain URLs or pre-defined encrypted strings (the app will attempt to decrypt and fall back to plaintext if decryption fails)*.
+*- The app also supports Azure as a target by setting `NEXT_PUBLIC_API_HOSTED_ON=AZURE` and providing `NEXT_PUBLIC_API_AZURE_URL`, see `.env.development` file*.
 
 ## Local deployment (production mode)
 

@@ -47,7 +47,7 @@ const AudioDeviceListComponent: React.FC = () => {
                 setExpandedKey(false);
             }
 
-            // If  re-expand requested (after refresh), expand it only if it still exists.
+            // If re-expand requested (after refresh), expand it only if it still exists.
             if (pendingExpandKey) {
                 setExpandedKey(devices.some(d => d.key === pendingExpandKey) ? pendingExpandKey : false);
                 setPendingExpandKey(null);
