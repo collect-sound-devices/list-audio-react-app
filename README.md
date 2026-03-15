@@ -68,8 +68,7 @@ npm run dev
 **Step 3. Open a browser at http://localhost:3000**
 
 *Notes*<br>
-*- The app also supports Azure as a target by setting `NEXT_PUBLIC_API_HOSTED_ON=AZURE` and providing `NEXT_PUBLIC_API_AZURE_URL`, see `.env.development` file*<br>
-*- The API URL values can be plain URLs or pre-defined encrypted strings (the app will attempt to decrypt and fall back to plaintext if decryption fails)*.
+*- The app also supports Azure as a target by setting `NEXT_PUBLIC_API_HOSTED_ON=AZURE` and providing `NEXT_PUBLIC_API_AZURE_URL`, see `.env.development` file*.
 
 ## Local deployment (production mode)
 
