@@ -19,13 +19,16 @@ const AudioDeviceListComponent: React.FC = () => {
     const [pendingExpandKey, setPendingExpandKey] = useState<string | null>(null);
     const { t: translate } = useTranslation();
 
-    const createAudioDeviceFetchService = React.useCallback(() => new AudioDeviceFetchService(
-        ({ progress: p, error: e }) => {
-            setProgress(p);
-            setError(e);
-        },
-        (key: string) => translate(key)
-    ), [translate]);
+    const createAudioDeviceFetchService = React.useCallback(
+        (onProgress?: (progress: { progress: number; error: string | null }) => void) => new AudioDeviceFetchService(
+            onProgress ?? (({ progress: p, error: e }) => {
+                setProgress(p);
+                setError(e);
+            }),
+            (key: string) => translate(key)
+        ),
+        [translate]
+    );
 
     const refetchDevices = React.useCallback(async (queryOverride?: string) => {
         const query = queryOverride ?? searchQuery;
@@ -70,15 +73,12 @@ const AudioDeviceListComponent: React.FC = () => {
     useEffect(() => {
         let cancelled = false;
 
-        const service = new AudioDeviceFetchService(
-            ({ progress: p, error: e }) => {
-                if (!cancelled) {
-                    setProgress(p);
-                    setError(e);
-                }
-            },
-            (key: string) => translate(key)
-        );
+        const service = createAudioDeviceFetchService(({ progress: p, error: e }) => {
+            if (!cancelled) {
+                setProgress(p);
+                setError(e);
+            }
+        });
 
         const run = async (query: string) => {
             setLoading(true);
@@ -101,7 +101,7 @@ const AudioDeviceListComponent: React.FC = () => {
         console.info(`Starting query, client part: ${searchQuery}`);
         void run(searchQuery);
         return () => { cancelled = true; };
-    }, [searchQuery, translate]);
+    }, [createAudioDeviceFetchService, searchQuery]);
 
     const handleSearch = (query: string) => setSearchQuery(query);
 
