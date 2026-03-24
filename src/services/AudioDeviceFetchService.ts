@@ -12,7 +12,6 @@ export class AudioDeviceFetchService {
     private readonly pauseDuration = 2000;
 
     constructor(
-        private readonly apiUrl: string,
         private readonly onProgress: (progress: FetchProgress) => void,
         private readonly translateError: (key: string) => string
     ) {}
@@ -27,6 +26,13 @@ export class AudioDeviceFetchService {
 
     private internalBase(): string {
         return '/api/audio-devices';
+    }
+
+    private shouldRetryViaCodespaces(): boolean {
+        const isAzureTarget = process.env.NEXT_PUBLIC_API_HOSTED_ON === 'AZURE';
+        const githubApiUrl = process.env.NEXT_PUBLIC_API_GITHUB_URL ?? '';
+
+        return !isAzureTarget && githubApiUrl.includes('.github.');
     }
 
     // Minimal shared helper to fetch, check status, parse JSON and ensure it's an array
@@ -93,8 +99,8 @@ export class AudioDeviceFetchService {
                 this.onProgress({progress: 100, error: null});
                 return audioDevices;
             } catch (err) {
-                if (!this.apiUrl.includes('.github.')) {
-                    console.info(`Api URL ${this.apiUrl} has no substring ".github.", so we don't start any reconnection attempt.`);
+                if (!this.shouldRetryViaCodespaces()) {
+                    console.info('Codespace retry is disabled for the current API target.');
                     this.handleFetchErrorNoAttempts(err);
                     return [];
                 }

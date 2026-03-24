@@ -7,7 +7,6 @@ import {Box, Alert, Accordion, AccordionSummary, AccordionDetails, Typography} f
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useTranslation } from 'react-i18next';
 import LoadingComponent from './LoadingComponent';
-import { getAudioDevicesApiUrl } from '../utils/ApiUrls';
 import { AudioDeviceFetchService } from '../services/AudioDeviceFetchService';
 
 const AudioDeviceListComponent: React.FC = () => {
@@ -20,19 +19,18 @@ const AudioDeviceListComponent: React.FC = () => {
     const [pendingExpandKey, setPendingExpandKey] = useState<string | null>(null);
     const { t: translate } = useTranslation();
 
-    const deviceApiUrl = getAudioDevicesApiUrl();
+    const createAudioDeviceFetchService = React.useCallback(() => new AudioDeviceFetchService(
+        ({ progress: p, error: e }) => {
+            setProgress(p);
+            setError(e);
+        },
+        (key: string) => translate(key)
+    ), [translate]);
 
     const refetchDevices = React.useCallback(async (queryOverride?: string) => {
         const query = queryOverride ?? searchQuery;
 
-        const service = new AudioDeviceFetchService(
-            deviceApiUrl,
-            ({ progress: p, error: e }) => {
-                setProgress(p);
-                setError(e);
-            },
-            (key: string) => translate(key)
-        );
+        const service = createAudioDeviceFetchService();
 
         setLoading(true);
         setError(null);
@@ -55,7 +53,7 @@ const AudioDeviceListComponent: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    }, [deviceApiUrl, searchQuery, translate, expandedKey, pendingExpandKey]);
+    }, [createAudioDeviceFetchService, searchQuery, expandedKey, pendingExpandKey]);
 
     const requestExpandAfterRefresh = React.useCallback(async (deviceKey: string) => {
         setPendingExpandKey(deviceKey);
@@ -73,7 +71,6 @@ const AudioDeviceListComponent: React.FC = () => {
         let cancelled = false;
 
         const service = new AudioDeviceFetchService(
-            deviceApiUrl,
             ({ progress: p, error: e }) => {
                 if (!cancelled) {
                     setProgress(p);
@@ -104,7 +101,7 @@ const AudioDeviceListComponent: React.FC = () => {
         console.info(`Starting query, client part: ${searchQuery}`);
         void run(searchQuery);
         return () => { cancelled = true; };
-    }, [searchQuery, deviceApiUrl, translate]);
+    }, [searchQuery, translate]);
 
     const handleSearch = (query: string) => setSearchQuery(query);
 
