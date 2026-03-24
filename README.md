@@ -50,20 +50,20 @@ dotnet run --launch-profile http
 ### Start the client locally (development mode)
 
 **Step 1. Install dependencies:**
-```bash
-npm install
-```
+  ```bash
+  npm install
+  ```
 
-*Note*<br>
-*- If you use locally hosted *Device Repository Server*, configure environment variables so the client points to your local backend.
-You can edit `.env.development` file or set the environment variables directly via powershell `$env:NEXT_PUBLIC_API_GITHUB_URL = "http://localhost:5027/api"`
-or via cmd.exe `setx NEXT_PUBLIC_API_GITHUB_URL "http://localhost:5027/api"`.<br>*
-*- If you want the app to start the GitHub Codespace on demand, set `GITHUB_PAT` as a server-side environment variable.*
+  *Note*<br>
+  *- If you use locally hosted *Device Repository Server*, configure environment variables so the client points to your local backend.
+  You can edit `.env.development` file or set the environment variables directly via powershell `$env:NEXT_PUBLIC_API_GITHUB_URL = "http://localhost:5027/api"`
+  or via cmd.exe `setx NEXT_PUBLIC_API_GITHUB_URL "http://localhost:5027/api"`.<br>*
+  *- If you want the app to start the GitHub Codespace on demand, set `GITHUB_PAT` as a server-side environment variable.*
 
 **Step 2. Start the npm development server:**
-```bash
-npm run dev
-```
+  ```bash
+  npm run dev
+  ```
 
 **Step 3. Open a browser at http://localhost:3000**
 
@@ -78,14 +78,14 @@ You can edit `.env.production` file or set `NEXT_PUBLIC_API_GITHUB_URL` directly
 *- If you want the app to start the GitHub Codespace on demand, set `GITHUB_PAT` as a server-side environment variable.*
 
 **Step 1. Build the client for production:**
-   ```bash
-   npm run build
-   ```
+  ```bash
+  npm run build
+  ```
 
 **Step 2. Start the npm production server:**
-    ```bash
-    npm start
-    ```
+  ```bash
+  npm start
+  ```
 
 **Step 3. Open a browser at http://localhost:3000**
 
