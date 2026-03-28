@@ -20,11 +20,15 @@ const AudioDeviceListComponent: React.FC = () => {
     const { t: translate } = useTranslation();
 
     const createAudioDeviceFetchService = React.useCallback(
-        (onProgress?: (progress: { progress: number; error: string | null }) => void) => new AudioDeviceFetchService(
-            onProgress ?? (({ progress: p, error: e }) => {
-                setProgress(p);
-                setError(e);
-            }),
+        (onProgress?:
+         (progress:
+          { progress: number; error: string | null }) => void)=>
+                new AudioDeviceFetchService(
+                    onProgress ?? (({progress: p, error: e}) => {
+                        setProgress(p);
+                        setError(e);
+                    }
+            ),
             (key: string) => translate(key)
         ),
         [translate]
