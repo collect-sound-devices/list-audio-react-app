@@ -3,7 +3,8 @@ import { getAudioDevicesApiUrl } from '@/src/utils/ApiUrls';
 
 async function forwardDeviceRequest(method: 'GET' | 'DELETE', deviceKey: string) {
   try {
-    const upstreamUrl = `${getAudioDevicesApiUrl()}/${encodeURIComponent(deviceKey)}`;
+    const upstreamUrl = `${getAudioDevicesApiUrl()}/${deviceKey}`;
+    console.info(`Starting ${method} ${upstreamUrl}`);
     const res = await fetch(upstreamUrl, {
       method,
       cache: 'no-store',

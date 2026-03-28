@@ -16,6 +16,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import ConfirmDeleteDialog from './ConfirmDeleteDialog';
+import {internalRouteBaseUrl} from "@/src/services/AudioDeviceFetchService";
 
 
 interface AudioDeviceDetailsExpandedProps {
@@ -59,7 +60,7 @@ const AudioDeviceDetailsExpanded: React.FC<AudioDeviceDetailsExpandedProps> = ({
 
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
 
-    const getDeviceApiUrl = (deviceKey: string): string => `/api/audio-devices/${encodeURIComponent(deviceKey)}`;
+    const getDeviceInternalRouteUrl = (deviceKey: string): string => `${internalRouteBaseUrl}/${encodeURIComponent(deviceKey)}`;
 
     React.useEffect(() => {
         return () => {
@@ -74,7 +75,7 @@ const AudioDeviceDetailsExpanded: React.FC<AudioDeviceDetailsExpandedProps> = ({
         if (isDeletePending) return;
 
         try {
-            const response = await fetch(getDeviceApiUrl(deviceKey), {cache: 'no-store'});
+            const response = await fetch(getDeviceInternalRouteUrl(deviceKey), {cache: 'no-store'});
             if (!response.ok) {
                 console.error(`Refresh failed: ${response.status} ${response.statusText}`);
                 return;
@@ -95,7 +96,7 @@ const AudioDeviceDetailsExpanded: React.FC<AudioDeviceDetailsExpandedProps> = ({
         setIsDeleteDialogOpen(false);
         setIsDeletePending(true);
         try {
-            const response = await fetch(getDeviceApiUrl(deviceKey), {
+            const response = await fetch(getDeviceInternalRouteUrl(deviceKey), {
                 method: 'DELETE',
                 cache: 'no-store'
             });

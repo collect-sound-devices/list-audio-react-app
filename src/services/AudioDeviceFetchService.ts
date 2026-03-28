@@ -7,6 +7,8 @@ export interface FetchProgress {
     error: string | null;
 }
 
+export const internalRouteBaseUrl = '/api/audio-devices';
+
 export class AudioDeviceFetchService {
     private readonly retryCount = 32;
     private readonly pauseDuration = 2000;
@@ -22,10 +24,6 @@ export class AudioDeviceFetchService {
 
     private async delay(): Promise<void> {
         await new Promise(resolve => setTimeout(resolve, this.pauseDuration));
-    }
-
-    private internalBase(): string {
-        return '/api/audio-devices';
     }
 
     private shouldRetryViaCodespaces(): boolean {
@@ -53,13 +51,13 @@ export class AudioDeviceFetchService {
     }
 
     private async fetchDevices(): Promise<ApiAudioDevice[]> {
-        return this.fetchDevicesFromUrl(this.internalBase(), 'fetch devices');
+        return this.fetchDevicesFromUrl(internalRouteBaseUrl, 'fetch devices');
     }
 
     private async searchDevices(query: string): Promise<ApiAudioDevice[]> {
         const params = new URLSearchParams();
         params.append('query', query);
-        return this.fetchDevicesFromUrl(`${this.internalBase()}/search?${params}`, 'search devices');
+        return this.fetchDevicesFromUrl(`${internalRouteBaseUrl}/search?${params}`, 'search devices');
     }
 
     private handleFetchErrorNoAttempts(err: unknown): void {
