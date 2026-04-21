@@ -33,7 +33,7 @@
     "sha.js": "^2.4.12",
     "flatted": "^3.4.2",
     "yaml": "^1.10.3",
-    "tinyglobby": {
+    "tinyblob": {
       "picomatch": "^4.0.4"
     }
   }
