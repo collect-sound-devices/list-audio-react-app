@@ -14,10 +14,9 @@ import { useTheme} from '@mui/material';
 import { Paper, IconButton} from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import DeleteIcon from '@mui/icons-material/Delete';
-import axios from 'axios';
-import {getAudioDevicesApiUrl} from '../utils/ApiUrls';
 
 import ConfirmDeleteDialog from './ConfirmDeleteDialog';
+import {internalRouteBaseUrl} from "@/src/services/AudioDeviceFetchService";
 
 
 interface AudioDeviceDetailsExpandedProps {
@@ -61,6 +60,8 @@ const AudioDeviceDetailsExpanded: React.FC<AudioDeviceDetailsExpandedProps> = ({
 
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
 
+    const getDeviceInternalRouteUrl = (deviceKey: string): string => `${internalRouteBaseUrl}/${encodeURIComponent(deviceKey)}`;
+
     React.useEffect(() => {
         return () => {
             if (refreshTimeoutRef.current !== null) {
@@ -74,8 +75,13 @@ const AudioDeviceDetailsExpanded: React.FC<AudioDeviceDetailsExpandedProps> = ({
         if (isDeletePending) return;
 
         try {
-            const response = await axios.get(`${getAudioDevicesApiUrl()}/${deviceKey}`);
-            console.log('Refresh successful:', response.data);
+            const response = await fetch(getDeviceInternalRouteUrl(deviceKey), {cache: 'no-store'});
+            if (!response.ok) {
+                console.error(`Refresh failed: ${response.status} ${response.statusText}`);
+                return;
+            }
+
+            console.log('Refresh successful');
 
             await onListRefreshRequested?.();
             await onReExpandRequested?.();
@@ -90,8 +96,17 @@ const AudioDeviceDetailsExpanded: React.FC<AudioDeviceDetailsExpandedProps> = ({
         setIsDeleteDialogOpen(false);
         setIsDeletePending(true);
         try {
-            const response = await axios.delete(`${getAudioDevicesApiUrl()}/${deviceKey}`);
-            console.log('Delete successful:', response.data);
+            const response = await fetch(getDeviceInternalRouteUrl(deviceKey), {
+                method: 'DELETE',
+                cache: 'no-store'
+            });
+            if (!response.ok) {
+                console.error(`Delete failed: ${response.status} ${response.statusText}`);
+                setIsDeletePending(false);
+                return;
+            }
+
+            console.log('Delete successful');
 
             refreshTimeoutRef.current = window.setTimeout(() => {
                 void Promise.resolve(onListRefreshRequested?.()).finally(() => {

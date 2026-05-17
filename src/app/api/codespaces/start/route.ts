@@ -21,7 +21,7 @@ function getGithubHeaders(): HeadersInit {
 }
 
 async function listCodespaces(): Promise<Codespace[]> {
-    const response = await fetch(`${GITHUB_API_URL}${'/user/codespaces'}`, {
+    const response = await fetch(`${GITHUB_API_URL}/user/codespaces`, {
         method: 'GET',
         headers: getGithubHeaders(),
         cache: 'no-store',
@@ -35,7 +35,7 @@ async function listCodespaces(): Promise<Codespace[]> {
 }
 
 async function startCodespace(name: string): Promise<void> {
-    const response = await fetch(`${GITHUB_API_URL}${`/user/codespaces/${name}/start`}`, {
+    const response = await fetch(`${GITHUB_API_URL}/user/codespaces/${name}/start`, {
         method: 'POST',
         headers: getGithubHeaders(),
         cache: 'no-store',

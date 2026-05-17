@@ -7,12 +7,13 @@ export interface FetchProgress {
     error: string | null;
 }
 
+export const internalRouteBaseUrl = '/api/audio-devices';
+
 export class AudioDeviceFetchService {
     private readonly retryCount = 32;
     private readonly pauseDuration = 2000;
 
     constructor(
-        private readonly apiUrl: string,
         private readonly onProgress: (progress: FetchProgress) => void,
         private readonly translateError: (key: string) => string
     ) {}
@@ -25,8 +26,11 @@ export class AudioDeviceFetchService {
         await new Promise(resolve => setTimeout(resolve, this.pauseDuration));
     }
 
-    private internalBase(): string {
-        return '/api/audio-devices';
+    private shouldRetryViaCodespaces(): boolean {
+        const isAzureTarget = process.env.NEXT_PUBLIC_API_HOSTED_ON === 'AZURE';
+        const githubApiUrl = process.env.NEXT_PUBLIC_API_GITHUB_URL ?? '';
+
+        return !isAzureTarget && githubApiUrl.includes('.github.');
     }
 
     // Minimal shared helper to fetch, check status, parse JSON and ensure it's an array
@@ -47,13 +51,13 @@ export class AudioDeviceFetchService {
     }
 
     private async fetchDevices(): Promise<ApiAudioDevice[]> {
-        return this.fetchDevicesFromUrl(this.internalBase(), 'fetch devices');
+        return this.fetchDevicesFromUrl(internalRouteBaseUrl, 'fetch devices');
     }
 
     private async searchDevices(query: string): Promise<ApiAudioDevice[]> {
         const params = new URLSearchParams();
         params.append('query', query);
-        return this.fetchDevicesFromUrl(`${this.internalBase()}/search?${params}`, 'search devices');
+        return this.fetchDevicesFromUrl(`${internalRouteBaseUrl}/search?${params}`, 'search devices');
     }
 
     private handleFetchErrorNoAttempts(err: unknown): void {
@@ -93,8 +97,8 @@ export class AudioDeviceFetchService {
                 this.onProgress({progress: 100, error: null});
                 return audioDevices;
             } catch (err) {
-                if (!this.apiUrl.includes('.github.')) {
-                    console.info(`Api URL ${this.apiUrl} has no substring ".github.", so we don't start any reconnection attempt.`);
+                if (!this.shouldRetryViaCodespaces()) {
+                    console.info('Codespace retry is disabled for the current API target.');
                     this.handleFetchErrorNoAttempts(err);
                     return [];
                 }

@@ -5,7 +5,6 @@ import { Typography, Box, Container } from '@mui/material';
 import DevicesIcon from '@mui/icons-material/Devices';
 import DnsIcon from '@mui/icons-material/Dns';
 import PersonIcon from '@mui/icons-material/Person';
-import { getInfoApiUrl } from '../utils/ApiUrls';
 import nextPackage from 'next/package.json';
 
 const AboutInfoComponent = () => {
@@ -15,14 +14,12 @@ const AboutInfoComponent = () => {
     const envClientCodeDate = process.env.NEXT_PUBLIC_CLIENT_LATEST_COMMIT_DATE;
     const clientCodeDate = envClientCodeDate && envClientCodeDate !== '' ? envClientCodeDate : 'unknown-date';
 
-    const serverInfoApiUrl = getInfoApiUrl();
-
     const [serverVersion, setServerVersion] = useState<string>('loading...');
     const [serverCodeDate, setServerCodeDate] = useState<string>('loading...');
     const [serverRuntime, setServerRuntime] = useState<string>('loading...');
 
     useEffect(() => {
-        fetch(`${serverInfoApiUrl}/version`)
+        fetch('/api/info/version', { cache: 'no-store' })
             .then(response => {
                 if (!response.ok) throw new Error('Network response was not ok');
                 return response.json();
@@ -37,7 +34,7 @@ const AboutInfoComponent = () => {
                 setServerCodeDate('date (yet) unavailable');
                 setServerRuntime('runtime description (yet) unavailable');
             });
-    }, [serverInfoApiUrl]);
+    }, []);
 
     const nextJsVersion = nextPackage.version;
 

@@ -1,6 +1,6 @@
 {
   "appTitle": "Audio Device Repository",
-  "audioDevicesFetchErrorStaringCodespace": "Starting backend in production mode...",
+  "audioDevicesFetchErrorStaringCodespace": "Starting backend in production mode... This could take up to 40 seconds.",
   "audioDevicesFetchErrorStartAttemptsExhausted": "Attempt's limit to start backend is reached",
   "audioDevicesFetchErrorNoAttempts": "Audio device repository server is not available. The corresponding web server is probably not running or not configured correctly."
 }
