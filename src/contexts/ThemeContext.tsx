@@ -10,10 +10,7 @@ interface ThemeProviderComponentProps {
     initialMode?: 'light' | 'dark';
 }
 
-const getInitialDarkMode = (initialMode?: 'light' | 'dark') => {
-    if (initialMode) return initialMode === 'dark';
-    if (typeof window === 'undefined') return false;
-
+const getBrowserDarkMode = () => {
     try {
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'dark' || savedTheme === 'light') {
@@ -27,10 +24,16 @@ const getInitialDarkMode = (initialMode?: 'light' | 'dark') => {
 };
 
 export const ThemeProviderComponent: React.FC<ThemeProviderComponentProps> = ({ children, initialMode }) => {
-    // Initialize from SSR-provided initialMode to prevent hydration flicker.
-    const [darkMode, setDarkMode] = useState<boolean>(() => getInitialDarkMode(initialMode));
+    // The first client render must match the server-rendered cookie snapshot.
+    const [darkMode, setDarkMode] = useState<boolean>(() => initialMode === 'dark');
 
     useEffect(() => {
+        const animationFrameId = window.requestAnimationFrame(() => {
+            if (!initialMode) {
+                setDarkMode(getBrowserDarkMode());
+            }
+        });
+
         // Listen for system preference changes only when no explicit saved theme exists.
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
         const handleChange = (event: MediaQueryListEvent) => {
@@ -44,9 +47,10 @@ export const ThemeProviderComponent: React.FC<ThemeProviderComponentProps> = ({ 
         };
         mediaQuery.addEventListener('change', handleChange);
         return () => {
+            window.cancelAnimationFrame(animationFrameId);
             mediaQuery.removeEventListener('change', handleChange);
         };
-    }, []);
+    }, [initialMode]);
 
     const theme = useMemo(
         () =>
