@@ -101,6 +101,7 @@ It explicitly checks `CyclomaticComplexityJS` and excludes non-source files such
 - The scripts above use the following GitHub Actions secrets: `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`, `GITHUB_PAT`, `AUDIO_API_GITHUB_URL`, `AUDIO_API_AZURE_URL`.
 
 ## Changelog
+- 2026.06 Latest Node.js, project clean-up
 - 2026.01 Device removal added 
 - 2025.12 Fetching code moved to the Next.js Server Components (RCS)
 - 2025.12 Migrated from a Vite-based SPA to Next.js (App Router).
