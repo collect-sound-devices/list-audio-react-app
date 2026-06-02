@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useState, useMemo, useEffect} from 'react';
+import React, {useState, useMemo} from 'react';
 import {
     List,
     Typography,
@@ -23,6 +23,10 @@ import {accordionStyle, accordionSummaryStyle} from "../styles/accordionStyles";
 import SortAndSearchAccordion from './SortAndSearchAccordion';
 import {ellipsisTextStyle, getFlexStylePercent} from "../styles/listStyles";
 
+const getSavedSearchQuery = () => {
+    if (typeof window === 'undefined') return '';
+    return localStorage.getItem('appliedSearchQuery') ?? '';
+};
 
 interface AudioDeviceListProps {
     audioDevices: AudioDevice[];
@@ -44,19 +48,12 @@ const AudioDeviceList: React.FC<AudioDeviceListProps> = ({
     const [sortField, setSortField] = useState<keyof AudioDevice>('updateDate');
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState(getSavedSearchQuery);
 
     // Controlled expansion: parent owns expandedKey; we only request changes.
     const expanded = expandedKey;
 
     const theme = useTheme();
-
-    useEffect(() => {
-        const savedQuery = localStorage.getItem('appliedSearchQuery');
-        if (savedQuery) {
-            setSearchQuery(savedQuery);
-        }
-    }, []);
 
     const sortedDevices = useMemo(() => {
         return [...audioDevices].sort((a, b) => {

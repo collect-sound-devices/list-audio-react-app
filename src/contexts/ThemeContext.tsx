@@ -10,26 +10,27 @@ interface ThemeProviderComponentProps {
     initialMode?: 'light' | 'dark';
 }
 
-export const ThemeProviderComponent: React.FC<ThemeProviderComponentProps> = ({ children, initialMode }) => {
-    // Initialize from SSR-provided initialMode to prevent hydration flicker.
-    const [darkMode, setDarkMode] = useState<boolean>(initialMode ? initialMode === 'dark' : false);
+const getInitialDarkMode = (initialMode?: 'light' | 'dark') => {
+    if (initialMode) return initialMode === 'dark';
+    if (typeof window === 'undefined') return false;
 
-    useEffect(() => {
-        // If SSR didn't specify a mode, fall back to stored preference or system.
-        if (!initialMode) {
-            try {
-                const savedTheme = localStorage.getItem('theme');
-                if (savedTheme === 'dark' || savedTheme === 'light') {
-                    setDarkMode(savedTheme === 'dark');
-                } else {
-                    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                    setDarkMode(systemPrefersDark);
-                }
-            } catch {
-                // ignore
-            }
+    try {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark' || savedTheme === 'light') {
+            return savedTheme === 'dark';
         }
 
+        return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    } catch {
+        return false;
+    }
+};
+
+export const ThemeProviderComponent: React.FC<ThemeProviderComponentProps> = ({ children, initialMode }) => {
+    // Initialize from SSR-provided initialMode to prevent hydration flicker.
+    const [darkMode, setDarkMode] = useState<boolean>(() => getInitialDarkMode(initialMode));
+
+    useEffect(() => {
         // Listen for system preference changes only when no explicit saved theme exists.
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
         const handleChange = (event: MediaQueryListEvent) => {
@@ -45,7 +46,7 @@ export const ThemeProviderComponent: React.FC<ThemeProviderComponentProps> = ({ 
         return () => {
             mediaQuery.removeEventListener('change', handleChange);
         };
-    }, [initialMode]);
+    }, []);
 
     const theme = useMemo(
         () =>
