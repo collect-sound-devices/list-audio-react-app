@@ -9,12 +9,17 @@ import { useTranslation } from 'react-i18next';
 import LoadingComponent from './LoadingComponent';
 import { AudioDeviceFetchService } from '../services/AudioDeviceFetchService';
 
+const getSavedSearchQuery = () => {
+    if (typeof window === 'undefined') return '';
+    return localStorage.getItem('appliedSearchQuery') ?? '';
+};
+
 const AudioDeviceListComponent: React.FC = () => {
     const [audioDevices, setAudioDevices] = useState<AudioDevice[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [progress, setProgress] = useState<number>(0);
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState(getSavedSearchQuery);
     const [expandedKey, setExpandedKey] = useState<string | false>(false);
     const [pendingExpandKey, setPendingExpandKey] = useState<string | null>(null);
     const { t: translate } = useTranslation();
@@ -66,13 +71,6 @@ const AudioDeviceListComponent: React.FC = () => {
         setPendingExpandKey(deviceKey);
         await refetchDevices();
     }, [refetchDevices]);
-
-    useEffect(() => {
-        const savedQuery = localStorage.getItem('appliedSearchQuery');
-        if (savedQuery) {
-            setSearchQuery(savedQuery);
-        }
-    }, []);
 
     useEffect(() => {
         let cancelled = false;
