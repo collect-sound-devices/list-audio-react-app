@@ -12,6 +12,7 @@ export const internalRouteBaseUrl = '/api/audio-devices';
 export class AudioDeviceFetchService {
     private readonly retryCount = 32;
     private readonly pauseDuration = 2000;
+    private codespaceStartRequested = false;
 
     constructor(
         private readonly onProgress: (progress: FetchProgress) => void,
@@ -76,13 +77,21 @@ export class AudioDeviceFetchService {
         });
     }
 
-    private async handleFetchErrorAsStaringCodespaceAsync(err: unknown, attempt: number): Promise<void> {
+    private async handleFetchErrorAsStartingCodespaceAsync(err: unknown, attempt: number): Promise<void> {
         console.log(`Device fetch error (attempt ${attempt + 1}):`, err);
         this.onProgress({
             progress: this.calculateProgress(attempt),
             error: this.translateError('audioDevicesFetchErrorStaringCodespace')
         });
-        await startCodespace();
+
+        if (!this.codespaceStartRequested) {
+            this.codespaceStartRequested = true;
+            const result = await startCodespace();
+            if (!result.ok) {
+                console.info(`Codespace start request did not complete: ${result.status ?? 'no status'} ${result.message ?? ''}`);
+            }
+        }
+
         await this.delay();
     }
 
@@ -106,7 +115,7 @@ export class AudioDeviceFetchService {
                     this.handleFetchErrorAttemptsExhausted(err);
                     return [];
                 }
-                await this.handleFetchErrorAsStaringCodespaceAsync(err, attempts);
+                await this.handleFetchErrorAsStartingCodespaceAsync(err, attempts);
             }
         }
 
