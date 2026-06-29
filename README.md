@@ -1,7 +1,7 @@
 # Audio Device Repository Client
 
 Visualizes an audio device repository using Next.js / React / TypeScript.<br>
-Launch it here [here](https://list-audio-react-app.vercel.app).<br>
+Launch it [here](https://list-audio-react-app.vercel.app).<br>
 The *Audio Device Repository Client* is primary client of the *Device Repository Server*,
 see [audio-device-repo-server](https://github.com/collect-sound-devices/audio-device-repo-server/).<br>
 
@@ -56,7 +56,7 @@ dotnet run --launch-profile http
 
   *Note*<br>
   *- If you use locally hosted *Device Repository Server*, configure environment variables so the client points to your local backend.
-  You can edit `.env.development` file or set the environment variables directly via powershell `$env:NEXT_PUBLIC_API_GITHUB_URL = "http://localhost:5027/api"`
+  You can edit `.env.development` file or set the environment variables directly via PowerShell `$env:NEXT_PUBLIC_API_GITHUB_URL = "http://localhost:5027/api"`
   or via cmd.exe `setx NEXT_PUBLIC_API_GITHUB_URL "http://localhost:5027/api"`.<br>*
   *- If you want the app to start the GitHub Codespace on demand, set `GITHUB_PAT` as a server-side environment variable.*
 
