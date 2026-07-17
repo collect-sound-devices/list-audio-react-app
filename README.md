@@ -1,16 +1,40 @@
-# Audio Device Repository Client
+# list-audio-react-app (Audio Device Repository Client)
 
-Visualizes an audio device repository using Next.js / React / TypeScript.<br>
+*Audio Device Repository Client* is a Next.js / React / TypeScript web client, providing a simple,
+responsive UI for the *Device Repository Server*.<br>
 Launch it [here](https://list-audio-react-app.vercel.app).<br>
-The *Audio Device Repository Client* is primary client of the *Device Repository Server*,
+It is the primary client of the *Device Repository Server*,
 see [audio-device-repo-server](https://github.com/collect-sound-devices/audio-device-repo-server/).<br>
 
 ![primaryWebClient screenshot](202509011555ReactRepoApp.jpg)
 
-## Motivation
+## Architecture
 
-The *Audio Device Repository* Client provides a simple, responsive web UI for the
-*Device Repository Server*.
+<div style="zoom: 0.5;">
+
+```mermaid
+flowchart TD
+
+classDef stressedBox fill:#f0f0f0,fill-opacity:0.2,stroke-width:4px;
+
+browser["Browser<br>(User)"]
+
+subgraph clientApp["list-audio-react-app<br>(Next.js, deployed on Vercel)"]
+    reactUi["React UI<br>(App Router pages & components)"]
+    apiRoutes["API Route Handlers<br>(Vercel Server Functions handling API requests)"]
+end
+class clientApp stressedBox
+
+repoServer["Device Repository Server<br>(REST API)"]
+mongoDb[("MongoDB")]
+
+browser -->|renders / interacts| reactUi
+reactUi -->|fetch| apiRoutes
+apiRoutes -->|GET/POST/PUT/DELETE| repoServer
+repoServer -->|reads / persists| mongoDb
+
+```
+</div>
 
 ## Functions
 
@@ -25,6 +49,27 @@ The *Audio Device Repository* Client provides a simple, responsive web UI for th
 - Backend on demand: starts the GitHub Codespaces-hosted backend
 and retries while it becomes available.
 
+## Technologies Used
+
+- TypeScript.
+- Next.js 16 (App Router) with Route Handlers, deployed as Vercel Server Functions to handle API requests.
+- React 19.
+- MUI (Material UI) v7, incl. `@mui/material-nextjs` for the App Router cache provider.
+- i18next / react-i18next for localization.
+- ESLint (`eslint-config-next`) for linting.
+- Vercel for hosting, with GitHub Actions for CI/CD.
+- Qodana for static analysis.
+
+## Used design patterns (excluding framework-provided ones)
+
+- Backend-for-Frontend: `app/api/**/route.ts` proxy the browser to the *Device Repository Server*.
+
+- Adapter/Mapper: `types/AudioDevice.ts` `AudioDevice.fromApiData()` maps the REST DTO to the client model.
+
+- Service Layer: `services/AudioDeviceFetchService.ts` encapsulates fetching and retry logic.
+
+- Provider: `app/Providers.tsx` and `contexts/ThemeContext.tsx` supply theme, i18n and MUI context to the app.
+
 ## Web Hosting (Primary Use Case)
 
 ### Client
@@ -35,11 +80,23 @@ and retries while it becomes available.
 - The *Device Repository Server* is hosted on GitHub Codespaces.<br>
   It starts automatically (on-demand).
 
-## Development Environment
+## Build and Debug
+
+### Prerequisites
+
+- Node.js (LTS) and npm.
+- (Optional) .NET SDK 8.0, to run the *Device Repository Server* locally instead of using the
+  GitHub Codespaces-hosted backend, see [audio-device-repo-server](https://github.com/eduarddanziger/audio-device-repo-server/).
+- Backend target configuration (`.env.development` / `.env.production`):
+  - By default the client targets the GitHub Codespaces-hosted server via `NEXT_PUBLIC_API_GITHUB_URL`.
+    Point it to a locally hosted server instead, e.g. via PowerShell `$env:NEXT_PUBLIC_API_GITHUB_URL = "http://localhost:5027/api"`
+    or via cmd.exe `setx NEXT_PUBLIC_API_GITHUB_URL "http://localhost:5027/api"`.
+  - To target Azure instead, set `NEXT_PUBLIC_API_HOSTED_ON=AZURE` and `NEXT_PUBLIC_API_AZURE_URL`.
+  - To let the app start the GitHub Codespace on demand, set `GITHUB_PAT` as a server-side environment variable.
 
 ### (Optional) Compile and start the server locally
 
-- Check out the backend repo [audio-device-repo-server](https://github.com/eduarddanziger/audio-device-repo-server/) and install .NET tools
+- Check out the backend repo [audio-device-repo-server](https://github.com/eduarddanziger/audio-device-repo-server/) and install .NET tools.
 - Start the ASP.NET Core Web API Server:
 
 ```powershell
@@ -47,47 +104,24 @@ cd DeviceRepoAspNetCore
 dotnet run --launch-profile http
 ```
 
-### Start the client locally (development mode)
+### Run the client (development mode)
 
-**Step 1. Install dependencies:**
-  ```bash
-  npm install
-  ```
+```bash
+npm install
+npm run dev
+```
 
-  *Note*<br>
-  *- If you use locally hosted *Device Repository Server*, configure environment variables so the client points to your local backend.
-  You can edit `.env.development` file or set the environment variables directly via PowerShell `$env:NEXT_PUBLIC_API_GITHUB_URL = "http://localhost:5027/api"`
-  or via cmd.exe `setx NEXT_PUBLIC_API_GITHUB_URL "http://localhost:5027/api"`.<br>*
-  *- If you want the app to start the GitHub Codespace on demand, set `GITHUB_PAT` as a server-side environment variable.*
+Open a browser at http://localhost:3000.
 
-**Step 2. Start the npm development server:**
-  ```bash
-  npm run dev
-  ```
+### Build and run the client (production mode)
 
-**Step 3. Open a browser at http://localhost:3000**
+```bash
+npm install
+npm run build
+npm start
+```
 
-*Notes*<br>
-*- The app also supports Azure as a target by setting `NEXT_PUBLIC_API_HOSTED_ON=AZURE` and providing `NEXT_PUBLIC_API_AZURE_URL`, see `.env.development` file*.
-
-## Local deployment (production mode)
-
-*Note*<br>
-*- If you use locally hosted *Device Repository Server*, configure environment variables so the client points to your local backend.
-You can edit `.env.production` file or set `NEXT_PUBLIC_API_GITHUB_URL` directly.<br>*
-*- If you want the app to start the GitHub Codespace on demand, set `GITHUB_PAT` as a server-side environment variable.*
-
-**Step 1. Build the client for production:**
-  ```bash
-  npm run build
-  ```
-
-**Step 2. Start the npm production server:**
-  ```bash
-  npm start
-  ```
-
-**Step 3. Open a browser at http://localhost:3000**
+Open a browser at http://localhost:3000.
 
 ## Governance (Qodana)
 Local Qodana analysis is configured in `qodana.yaml` to use the `jetbrains/qodana-js:2025.3` linter together with
@@ -106,3 +140,12 @@ It explicitly checks `CyclomaticComplexityJS` and excludes non-source files such
 - 2025.12 Fetching code moved to the Next.js Server Components (RCS)
 - 2025.12 Migrated from a Vite-based SPA to Next.js (App Router).
 
+## License
+
+This project is licensed under the terms of the [MIT License](LICENSE).
+
+## Contact
+
+Eduard Danziger
+
+Email: [edanziger@gmx.de](mailto:edanziger@gmx.de)
