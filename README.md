@@ -60,14 +60,11 @@ and retries while it becomes available.
 - Vercel for hosting, with GitHub Actions for CI/CD.
 - Qodana for static analysis.
 
-## Used design patterns (excluding framework-provided ones)
+## Used design patterns
 
 - Backend-for-Frontend: `app/api/**/route.ts` proxy the browser to the *Device Repository Server*.
-
 - Adapter/Mapper: `types/AudioDevice.ts` `AudioDevice.fromApiData()` maps the REST DTO to the client model.
-
 - Service Layer: `services/AudioDeviceFetchService.ts` encapsulates fetching and retry logic.
-
 - Provider: `app/Providers.tsx` and `contexts/ThemeContext.tsx` supply theme, i18n and MUI context to the app.
 
 ## Web Hosting (Primary Use Case)
@@ -85,8 +82,6 @@ and retries while it becomes available.
 ### Prerequisites
 
 - Node.js (LTS) and npm.
-- (Optional) .NET SDK 8.0, to run the *Device Repository Server* locally instead of using the
-  GitHub Codespaces-hosted backend, see [audio-device-repo-server](https://github.com/eduarddanziger/audio-device-repo-server/).
 - Backend target configuration (`.env.development` / `.env.production`):
   - By default the client targets the GitHub Codespaces-hosted server via `NEXT_PUBLIC_API_GITHUB_URL`.
     Point it to a locally hosted server instead, e.g. via PowerShell `$env:NEXT_PUBLIC_API_GITHUB_URL = "http://localhost:5027/api"`
@@ -96,7 +91,7 @@ and retries while it becomes available.
 
 ### (Optional) Compile and start the server locally
 
-- Check out the backend repo [audio-device-repo-server](https://github.com/eduarddanziger/audio-device-repo-server/) and install .NET tools.
+- Check out the backend repo [audio-device-repo-server](https://github.com/eduarddanziger/audio-device-repo-server/) and install .NET toolchain.
 - Start the ASP.NET Core Web API Server:
 
 ```powershell
