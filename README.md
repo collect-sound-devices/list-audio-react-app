@@ -2,7 +2,7 @@
 
 *Audio Device Repository Client* is a Next.js / React / TypeScript web client, providing a simple,
 responsive UI for the *Device Repository Server*.<br>
-Launch it [here](https://list-audio-react-app.vercel.app).<br>
+Launch it [list-audio-react-app.vercel.app](https://list-audio-react-app.vercel.app).<br>
 It is the primary client of the *Device Repository Server*,
 see [audio-device-repo-server](https://github.com/collect-sound-devices/audio-device-repo-server/).<br>
 
@@ -10,7 +10,7 @@ see [audio-device-repo-server](https://github.com/collect-sound-devices/audio-de
 
 ## Architecture
 
-<div style="zoom: 0.5;">
+<div style="zoom: 0.8;">
 
 ```mermaid
 flowchart TD
@@ -20,8 +20,8 @@ classDef stressedBox fill:#f0f0f0,fill-opacity:0.2,stroke-width:4px;
 browser["Browser<br>(User)"]
 
 subgraph clientApp["list-audio-react-app<br>(Next.js, deployed on Vercel)"]
-    reactUi["React UI<br>(App Router pages & components)"]
-    apiRoutes["API Route Handlers<br>(Vercel Server Functions handling API requests)"]
+    reactUi["React UI<br>(App Router pages &<br> components)"]
+    apiRoutes["API Route Handlers<br>(Vercel Server Functions<br>handling API requests)"]
 end
 class clientApp stressedBox
 
@@ -88,16 +88,6 @@ and retries while it becomes available.
   - To target Azure instead, set `NEXT_PUBLIC_API_HOSTED_ON=AZURE` and `NEXT_PUBLIC_API_AZURE_URL`.
   - To let the app start the GitHub Codespace on demand, set `GITHUB_PAT` as a server-side environment variable.
 
-### (Optional) Compile and start the server locally
-
-- Check out the backend repo [audio-device-repo-server](https://github.com/eduarddanziger/audio-device-repo-server/) and install .NET toolchain.
-- Start the ASP.NET Core Web API Server:
-
-```powershell
-cd DeviceRepoAspNetCore
-dotnet run --launch-profile http
-```
-
 ### Run the client (development mode)
 
 ```bash
@@ -117,6 +107,15 @@ npm start
 
 Open a browser at http://localhost:3000.
 
+### (Optional) Compile and start the server locally
+
+- Check out the backend repo [audio-device-repo-server](https://github.com/collect-sound-devices/audio-device-repo-server/) and install .NET toolchain.
+- Start the ASP.NET Core Web API Server:
+
+```powershell
+cd DeviceRepoAspNetCore
+dotnet run --launch-profile http
+```
 ## Governance (Qodana)
 Local Qodana analysis is configured in `qodana.yaml` to use the `jetbrains/qodana-js:2025.3` linter together with
 the custom inspection profile at `.qodana/profiles/inspection-profile01.xml`.
