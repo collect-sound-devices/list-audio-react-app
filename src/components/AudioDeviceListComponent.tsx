@@ -9,17 +9,12 @@ import { useTranslation } from 'react-i18next';
 import LoadingComponent from './LoadingComponent';
 import { AudioDeviceFetchService } from '../services/AudioDeviceFetchService';
 
-const getSavedSearchQuery = () => {
-    if (typeof window === 'undefined') return '';
-    return localStorage.getItem('appliedSearchQuery') ?? '';
-};
-
 const AudioDeviceListComponent: React.FC = () => {
     const [audioDevices, setAudioDevices] = useState<AudioDevice[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [progress, setProgress] = useState<number>(0);
-    const [searchQuery, setSearchQuery] = useState(getSavedSearchQuery);
+    const [searchQuery, setSearchQuery] = useState('');
     const [expandedKey, setExpandedKey] = useState<string | false>(false);
     const [pendingExpandKey, setPendingExpandKey] = useState<string | null>(null);
     const { t: translate } = useTranslation();
@@ -38,6 +33,14 @@ const AudioDeviceListComponent: React.FC = () => {
         ),
         [translate]
     );
+
+    useEffect(() => {
+        const animationFrameId = window.requestAnimationFrame(() => {
+            setSearchQuery(localStorage.getItem('appliedSearchQuery') ?? '');
+        });
+
+        return () => window.cancelAnimationFrame(animationFrameId);
+    }, []);
 
     const refetchDevices = React.useCallback(async (queryOverride?: string) => {
         const query = queryOverride ?? searchQuery;

@@ -61,6 +61,33 @@ export class AudioDeviceFetchService {
         return this.fetchDevicesFromUrl(`${internalRouteBaseUrl}/search?${params}`, 'search devices');
     }
 
+    private async fetchWithCodespaceRetry(fetchApiDevices: () => Promise<ApiAudioDevice[]>): Promise<AudioDevice[]> {
+        let attempts = 0;
+
+        while (attempts < this.retryCount) {
+            try {
+                const apiDevices = await fetchApiDevices();
+                const audioDevices = apiDevices.map(AudioDevice.fromApiData);
+
+                this.onProgress({progress: 100, error: null});
+                return audioDevices;
+            } catch (err) {
+                if (!this.shouldRetryViaCodespaces()) {
+                    console.info('Codespace retry is disabled for the current API target.');
+                    this.handleFetchErrorNoAttempts(err);
+                    return [];
+                }
+                if (++attempts === this.retryCount) {
+                    this.handleFetchErrorAttemptsExhausted(err);
+                    return [];
+                }
+                await this.handleFetchErrorAsStartingCodespaceAsync(err, attempts);
+            }
+        }
+
+        return [];
+    }
+
     private handleFetchErrorNoAttempts(err: unknown): void {
         console.error('Device fetch error:', err);
         this.onProgress({
@@ -96,37 +123,11 @@ export class AudioDeviceFetchService {
     }
 
     async fetchAudioDevices(): Promise<AudioDevice[]> {
-        let attempts = 0;
-
-        while (attempts < this.retryCount) {
-            try {
-                const apiDevices = await this.fetchDevices();
-                const audioDevices = apiDevices.map(AudioDevice.fromApiData);
-
-                this.onProgress({progress: 100, error: null});
-                return audioDevices;
-            } catch (err) {
-                if (!this.shouldRetryViaCodespaces()) {
-                    console.info('Codespace retry is disabled for the current API target.');
-                    this.handleFetchErrorNoAttempts(err);
-                    return [];
-                }
-                if (++attempts === this.retryCount) {
-                    this.handleFetchErrorAttemptsExhausted(err);
-                    return [];
-                }
-                await this.handleFetchErrorAsStartingCodespaceAsync(err, attempts);
-            }
-        }
-
-        return [];
+        return this.fetchWithCodespaceRetry(() => this.fetchDevices());
     }
 
     async searchAudioDevices(query: string): Promise<AudioDevice[]> {
-        const apiDevices = await this.searchDevices(query);
-        const audioDevices = apiDevices.map(AudioDevice.fromApiData);
-        this.onProgress({ progress: 100, error: null });
-        return audioDevices;
+        return this.fetchWithCodespaceRetry(() => this.searchDevices(query));
     }
 
 }
