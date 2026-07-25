@@ -131,10 +131,12 @@ const SortAndSearchAccordion: React.FC<SortSearchAccordionProps>
                                 label="Sort by"
                                 onChange={handleSortFieldChange}
                                 MenuProps={{
-                                    PaperProps: {
-                                        sx: {
-                                            '& .MuiMenuItem-root': {
-                                                fontSize: '0.9rem'
+                                    slotProps: {
+                                        paper: {
+                                            sx: {
+                                                '& .MuiMenuItem-root': {
+                                                    fontSize: '0.9rem'
+                                                }
                                             }
                                         }
                                     }
