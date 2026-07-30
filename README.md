@@ -8,6 +8,7 @@ see [audio-device-repo-server](https://github.com/collect-sound-devices/audio-de
 
 ![primaryWebClient screenshot](202509011555ReactRepoApp.jpg)
 
+---
 ## Architecture
 
 <div style="zoom: 0.8;">
@@ -36,6 +37,7 @@ repoServer -->|reads / persists| mongoDb
 ```
 </div>
 
+---
 ## Functions
 
 - Browsing: shows the current list of collected audio devices and
@@ -49,6 +51,7 @@ repoServer -->|reads / persists| mongoDb
 - Backend on demand: starts the GitHub Codespaces-hosted backend
 and retries while it becomes available.
 
+---
 ## Technologies Used
 
 - React 19 / TypeScript.
@@ -59,6 +62,7 @@ and retries while it becomes available.
 - Vercel for hosting, with GitHub Actions for CI/CD.
 - Qodana for static analysis.
 
+---
 ## Used design patterns
 
 - Backend-for-Frontend: `app/api/**/route.ts` proxy the browser to the *Device Repository Server*.
@@ -66,6 +70,7 @@ and retries while it becomes available.
 - Service Layer: `services/AudioDeviceFetchService.ts` encapsulates fetching and retry logic.
 - Provider: `app/Providers.tsx` and `contexts/ThemeContext.tsx` supply theme, i18n and MUI context to the app.
 
+---
 ## Web Hosting (Primary Use Case)
 
 ### Client
@@ -76,6 +81,7 @@ and retries while it becomes available.
 - The *Device Repository Server* is hosted on GitHub Codespaces.<br>
   It starts automatically (on-demand).
 
+---
 ## Build and Debug
 
 ### Prerequisites
@@ -107,6 +113,17 @@ npm start
 
 Open a browser at http://localhost:3000.
 
+### Debug with WebStorm
+
+Run configurations are stored in `.idea/runConfigurations` and appear in WebStorm's run/debug selector:
+
+- `Client Debug JavaScript`: attaches browser debugging to http://localhost:3000. Start the app first.
+- `Developer Debug Next.js Server-side`: runs `npm run dev` with server-side debugging.
+- `Production Debug Node.js Server-side`: runs `next start` with `NODE_ENV=production`. Run `npm run build` first.
+
+Set `GITHUB_PAT` in the latter two run configurations when backend auto-start is needed.
+Do it locally in WebStorm or your environment; do not commit token values
+
 ### (Optional) Compile and start the server locally
 
 - Check out the backend repo [audio-device-repo-server](https://github.com/collect-sound-devices/audio-device-repo-server/) and install .NET toolchain.
@@ -116,6 +133,7 @@ Open a browser at http://localhost:3000.
 cd DeviceRepoAspNetCore
 dotnet run --launch-profile http
 ```
+---
 ## Governance (Qodana)
 Local Qodana analysis is configured in `qodana.yaml` to use the `jetbrains/qodana-js:2025.3` linter together with
 the custom inspection profile at `.qodana/profiles/inspection-profile01.xml`.
@@ -128,7 +146,7 @@ It explicitly checks `CyclomaticComplexityJS` and excludes non-source files such
 - The scripts above use the following GitHub Actions secrets: `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`, `GITHUB_PAT`, `AUDIO_API_GITHUB_URL`, `AUDIO_API_AZURE_URL`.
 
 ## Changelog
-- 2026.07 React / Node.js updated to latest versions
+- 2026.07 React / Node.js updated to latest versions, vulnerable dependency overrides fixed
 - 2026.06 Latest Node.js, project cleaned up
 - 2026.01 Device removal added 
 - 2025.12 Fetching code moved to the Next.js Server Components (RCS)
