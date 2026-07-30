@@ -33,7 +33,10 @@
     "sha.js": "^2.4.12",
     "flatted": "^3.4.2",
     "yaml": "^1.10.3",
-    "postcss": "8.5.10",
+    "minimatch": "10.2.6",
+    "brace-expansion": "5.0.9",
+    "postcss": "8.5.25",
+    "sharp": "0.35.3",
     "tinyblob": {
       "picomatch": "^4.0.4"
     }
