@@ -11,33 +11,33 @@ see [audio-device-repo-server](https://github.com/collect-sound-devices/audio-de
 ---
 ## Architecture
 
-<div style="zoom: 0.8;">
-
 ```mermaid
 flowchart TD
 
 classDef stressedBox fill:#f0f0f0,fill-opacity:0.2,stroke-width:4px;
 
-browser["Browser<br>(User)"]
+browser["Browser / User Input"]
 
-subgraph clientApp["list-audio-react-app<br>(Next.js, deployed on Vercel)"]
-    reactUi["React UI<br>(App Router pages &<br> components)"]
-    apiRoutes["API Route Handlers<br>(Vercel Server Functions<br>handling API requests)"]
+subgraph clientApp["list-audio-react-app: Next.js, deployed on Vercel"]
+    reactUi["React UI
+    (App Router pages & components)"]
+    apiRoutes["API Route Handlers
+    (Vercel Server Functions
+    handling API requests)"]
 end
 class clientApp stressedBox
 
-repoServer["Device Repository Server<br>(REST API)"]
+repoServer["Device Repository Server
+(REST API)"]
+
 mongoDb[("MongoDB")]
 
 browser -->|renders / interacts| reactUi
 reactUi -->|fetch| apiRoutes
 apiRoutes -->|GET/POST/PUT/DELETE| repoServer
 repoServer -->|reads / persists| mongoDb
-
 ```
-</div>
 
----
 ## Functions
 
 - Browsing: shows the current list of collected audio devices and
