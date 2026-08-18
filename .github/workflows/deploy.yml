@@ -27,9 +27,6 @@ jobs:
         with:
           node-version: '24'
 
-      - name: Install dependencies
-        run: npm install
-
       - name: Get version from Git tags
         id: get_version
         run: |
@@ -77,6 +74,7 @@ jobs:
           NEXT_PUBLIC_CLIENT_LATEST_COMMIT_DATE: ${{ steps.get_latest_commit_date.outputs.LATEST_COMMIT_DATE }}
         run: |
           npm install -g vercel@latest
+          rm -rf node_modules package-lock.json
           vercel pull --yes --environment=production --token=$VERCEL_TOKEN
           vercel build --prod --token=$VERCEL_TOKEN
           vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
