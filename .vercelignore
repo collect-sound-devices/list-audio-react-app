@@ -1,4 +1,2 @@
 .git
 .next
-.env.development
-.env.local
