@@ -66,6 +66,7 @@ jobs:
           echo "Latest commit date: $LATEST_COMMIT_DATE"    
 
       - name: Pull, build and deploy to Vercel
+        shell: bash
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -73,10 +74,16 @@ jobs:
           NEXT_PUBLIC_CLIENT_VERSION: ${{ steps.get_version.outputs.VERSION }}
           NEXT_PUBLIC_CLIENT_LATEST_COMMIT_DATE: ${{ steps.get_latest_commit_date.outputs.LATEST_COMMIT_DATE }}
         run: |
+          set -euo pipefail
           npm install -g vercel@latest
-          vercel pull --yes --environment=production --token=$VERCEL_TOKEN
-          vercel build --prod --token=$VERCEL_TOKEN
-          vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
+          vercel pull --yes --environment=production
+          # vercel build loads .vercel/.env.production.local. The NEXT_PUBLIC_* values must be injected there.
+          {
+            echo "NEXT_PUBLIC_CLIENT_VERSION=$NEXT_PUBLIC_CLIENT_VERSION"
+            echo "NEXT_PUBLIC_CLIENT_LATEST_COMMIT_DATE=$NEXT_PUBLIC_CLIENT_LATEST_COMMIT_DATE"
+          } >> .vercel/.env.production.local
+          vercel build --prod
+          vercel deploy --prebuilt --prod
 
       - name: Create or update Release
         run: |
