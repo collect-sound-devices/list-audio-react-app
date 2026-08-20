@@ -67,13 +67,13 @@ jobs:
           "VERSION=$VERSION" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           Write-Output "Using version: $VERSION"    
           
-          - name: Get latest check-in time from Git
-          id: get_latest_commit_date
-          run: |
-            # Get the latest commit date in ISO 8601 format
-            LATEST_COMMIT_DATE=$(git log -1 --format=%cd --date=format:'%Y-%m-%dT%H:%M:%S%z')
-            echo "LATEST_COMMIT_DATE=$LATEST_COMMIT_DATE" >> $GITHUB_OUTPUT
-            echo "Latest commit date: $LATEST_COMMIT_DATE"    
+      - name: Get latest check-in time from Git
+        id: get_latest_commit_date
+        run: |
+          # Get the latest commit date in ISO 8601 format
+          LATEST_COMMIT_DATE=$(git log -1 --format=%cd --date=format:'%Y-%m-%dT%H:%M:%S%z')
+          echo "LATEST_COMMIT_DATE=$LATEST_COMMIT_DATE" >> $GITHUB_OUTPUT
+          echo "Latest commit date: $LATEST_COMMIT_DATE"    
 
       - name: Pull, build and deploy to Vercel
         shell: bash
