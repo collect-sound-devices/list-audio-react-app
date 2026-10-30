@@ -67,3 +67,4 @@ out
 !.idea/inspectionProfiles/
 
 /public/version.json
+*.tsbuildinfo

@@ -34,6 +34,14 @@ const AudioDeviceListComponent: React.FC = () => {
         [translate]
     );
 
+    useEffect(() => {
+        const animationFrameId = window.requestAnimationFrame(() => {
+            setSearchQuery(localStorage.getItem('appliedSearchQuery') ?? '');
+        });
+
+        return () => window.cancelAnimationFrame(animationFrameId);
+    }, []);
+
     const refetchDevices = React.useCallback(async (queryOverride?: string) => {
         const query = queryOverride ?? searchQuery;
 
@@ -66,13 +74,6 @@ const AudioDeviceListComponent: React.FC = () => {
         setPendingExpandKey(deviceKey);
         await refetchDevices();
     }, [refetchDevices]);
-
-    useEffect(() => {
-        const savedQuery = localStorage.getItem('appliedSearchQuery');
-        if (savedQuery) {
-            setSearchQuery(savedQuery);
-        }
-    }, []);
 
     useEffect(() => {
         let cancelled = false;

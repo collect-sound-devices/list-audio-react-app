@@ -5,9 +5,13 @@ import { Typography, Box, Container } from '@mui/material';
 import DevicesIcon from '@mui/icons-material/Devices';
 import DnsIcon from '@mui/icons-material/Dns';
 import PersonIcon from '@mui/icons-material/Person';
-import nextPackage from 'next/package.json';
 
-const AboutInfoComponent = () => {
+type AboutInfoComponentProps = {
+    nextJsVersion: string;
+    reactVersion: string;
+};
+
+const AboutInfoComponent = ({ nextJsVersion, reactVersion }: AboutInfoComponentProps) => {
     const envClientVersion = process.env.NEXT_PUBLIC_CLIENT_VERSION;
     const clientVersion = envClientVersion && envClientVersion !== '' ? envClientVersion : 'unknown-version';
 
@@ -36,15 +40,13 @@ const AboutInfoComponent = () => {
             });
     }, []);
 
-    const nextJsVersion = nextPackage.version;
-
     return (
         <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 1, paddingTop: 1 }}>
             <Container sx={{ marginTop: 2, marginLeft: -1.6 }}>
                 <Box sx={{ display: 'flex', alignItems: 'flex-start', marginBottom: 2 }}>
                     <DevicesIcon fontSize={"small"} sx={{ marginRight: 1 }} />
                     <Typography variant="body1" sx={{lineHeight: '1.2rem' }}>
-                        Frontend: {clientVersion}, {clientCodeDate}. Using next.js {nextJsVersion}.
+                        Frontend: {clientVersion}, {clientCodeDate}. Using react {reactVersion} / next.js {nextJsVersion}.
                     </Typography>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'flex-start', marginBottom: 2 }}>

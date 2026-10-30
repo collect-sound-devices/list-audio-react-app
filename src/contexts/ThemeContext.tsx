@@ -10,25 +10,29 @@ interface ThemeProviderComponentProps {
     initialMode?: 'light' | 'dark';
 }
 
+const getBrowserDarkMode = () => {
+    try {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark' || savedTheme === 'light') {
+            return savedTheme === 'dark';
+        }
+
+        return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    } catch {
+        return false;
+    }
+};
+
 export const ThemeProviderComponent: React.FC<ThemeProviderComponentProps> = ({ children, initialMode }) => {
-    // Initialize from SSR-provided initialMode to prevent hydration flicker.
-    const [darkMode, setDarkMode] = useState<boolean>(initialMode ? initialMode === 'dark' : false);
+    // The first client render must match the server-rendered cookie snapshot.
+    const [darkMode, setDarkMode] = useState<boolean>(() => initialMode === 'dark');
 
     useEffect(() => {
-        // If SSR didn't specify a mode, fall back to stored preference or system.
-        if (!initialMode) {
-            try {
-                const savedTheme = localStorage.getItem('theme');
-                if (savedTheme === 'dark' || savedTheme === 'light') {
-                    setDarkMode(savedTheme === 'dark');
-                } else {
-                    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                    setDarkMode(systemPrefersDark);
-                }
-            } catch {
-                // ignore
+        const animationFrameId = window.requestAnimationFrame(() => {
+            if (!initialMode) {
+                setDarkMode(getBrowserDarkMode());
             }
-        }
+        });
 
         // Listen for system preference changes only when no explicit saved theme exists.
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -43,6 +47,7 @@ export const ThemeProviderComponent: React.FC<ThemeProviderComponentProps> = ({ 
         };
         mediaQuery.addEventListener('change', handleChange);
         return () => {
+            window.cancelAnimationFrame(animationFrameId);
             mediaQuery.removeEventListener('change', handleChange);
         };
     }, [initialMode]);

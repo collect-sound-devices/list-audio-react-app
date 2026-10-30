@@ -27,6 +27,8 @@ exclude:
       - next-env.d.ts
       - tsconfig.tsbuildinfo
       - qodana.yaml
+      - .github/workflows/deploy.yml
+      - .github/workflows/vercel-init.yml
       - README.md
   - name: Eslint
 

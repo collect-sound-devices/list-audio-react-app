@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useState, useMemo, useEffect} from 'react';
+import React, {useEffect, useState, useMemo} from 'react';
 import {
     List,
     Typography,
@@ -22,7 +22,6 @@ import {DeviceFlowType} from "../types/DeviceFlowType";
 import {accordionStyle, accordionSummaryStyle} from "../styles/accordionStyles";
 import SortAndSearchAccordion from './SortAndSearchAccordion';
 import {ellipsisTextStyle, getFlexStylePercent} from "../styles/listStyles";
-
 
 interface AudioDeviceListProps {
     audioDevices: AudioDevice[];
@@ -46,17 +45,18 @@ const AudioDeviceList: React.FC<AudioDeviceListProps> = ({
 
     const [searchQuery, setSearchQuery] = useState('');
 
+    useEffect(() => {
+        const animationFrameId = window.requestAnimationFrame(() => {
+            setSearchQuery(localStorage.getItem('appliedSearchQuery') ?? '');
+        });
+
+        return () => window.cancelAnimationFrame(animationFrameId);
+    }, []);
+
     // Controlled expansion: parent owns expandedKey; we only request changes.
     const expanded = expandedKey;
 
     const theme = useTheme();
-
-    useEffect(() => {
-        const savedQuery = localStorage.getItem('appliedSearchQuery');
-        if (savedQuery) {
-            setSearchQuery(savedQuery);
-        }
-    }, []);
 
     const sortedDevices = useMemo(() => {
         return [...audioDevices].sort((a, b) => {
