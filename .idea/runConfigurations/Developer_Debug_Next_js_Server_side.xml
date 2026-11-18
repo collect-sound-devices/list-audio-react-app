@@ -12,6 +12,8 @@
     <EXTENSION ID="com.intellij.javascript.debugger.execution.StartBrowserRunConfigurationExtension">
       <browser with-js-debugger="true" />
     </EXTENSION>
-    <method v="2" />
+    <method v="2">
+      <option name="LaunchBrowser.Before.Run" url="http://localhost:3000" withDebugger="true" />
+    </method>
   </configuration>
 </component>
